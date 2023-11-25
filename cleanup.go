@@ -1,6 +1,7 @@
 package main
 
 import (
+	"joomla-backup/internal/config"
 	"os"
 
 	log "github.com/sirupsen/logrus"
@@ -8,25 +9,22 @@ import (
 
 func cleanup() {
 	log.Infof("cleanup")
-
-	removeBackupFile()
 	cleanWorkdir()
 }
 
-func removeBackupFile() {
-	log.Info("cleaning backup file")
-
-	err := os.Remove("/tmp/backup-" + timestamp + ".tar.gz")
-	if err != nil {
-		log.Errorf("error removing backup file %v", err)
-	}
-}
-
 func cleanWorkdir() {
-	log.Debug("remove workdir")
+	log.Info("remove old dumps")
 
-	if err := os.RemoveAll(workdir); err != nil {
-		log.Errorf("error removing workdir: %v", err)
+	log.Debugf("Reading dir %s", config.Configuration.Paths.DatabaseDumps)
+	files, err := os.ReadDir(config.Configuration.Paths.DatabaseDumps)
+	if err != nil {
+		log.Errorf("Error reading dbdump dir: %s", err.Error())
 	}
 
+	for _, file := range files {
+		log.Infof("Deleting file: %s", file.Name())
+		if err := os.Remove(file.Name()); err != nil {
+			log.Errorf("error deleting file %s. Error: %s", file.Name(), err.Error())
+		}
+	}
 }

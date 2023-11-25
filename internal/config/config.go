@@ -12,22 +12,17 @@ var Configuration Config
 type Config struct {
 	Global       GlobalConfig
 	Database     DatabaseConfig
-	DataDirs     []string
 	Paths        PathConfig
 	DockerClient *client.Client
-	Sftp         SftpConfig
 }
 
 type GlobalConfig struct {
-	Debug    bool
-	Dryrun   bool
-	Timezone string
-	MaxAge   int
+	Debug  bool
+	Dryrun bool
 }
 
 type PathConfig struct {
 	DatabaseDumps string
-	FileDumps     []string
 }
 
 type DatabaseConfig struct {
@@ -36,13 +31,6 @@ type DatabaseConfig struct {
 		Password string
 	}
 	Databases []string
-}
-
-type SftpConfig struct {
-	Url      string
-	Port     int
-	Username string
-	Password string
 }
 
 func initViper() error {
@@ -99,11 +87,6 @@ func init() {
 	err := initViper()
 	if err != nil {
 		log.Fatal("unable to init config. Bye.")
-	}
-
-	// Check if an ssh password is provided for sftp
-	if Configuration.Sftp.Password == "" {
-		log.Fatal("No password provided for SFTP. Cannot run.")
 	}
 
 	// Configure logger
