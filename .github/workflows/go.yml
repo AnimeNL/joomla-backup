@@ -23,7 +23,7 @@ jobs:
       run: go mod download
 
     - name: Build
-      run: env GOOS=${{ matrix.go-os }} GOARCH=${{ matrix.go-arch }} go build -o ./build/jbackup-${{ matrix.go-os }}-${{ matrix.go-arch }} .
+      run: env GOOS=${{ matrix.go-os }} GOARCH=${{ matrix.go-arch }} CGO_ENABLED=0 go build -o ./build/jbackup-${{ matrix.go-os }}-${{ matrix.go-arch }} .
   
     - name: store build output
       uses: actions/upload-artifact@v3
